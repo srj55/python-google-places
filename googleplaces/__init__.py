@@ -306,7 +306,7 @@ class GooglePlaces(object):
         return GooglePlacesSearchResult(self, places_response)
 
     def text_search(self, query=None, language=lang.ENGLISH, lat_lng=None,
-                    radius=3200, type=None, types=[], location=None, pagetoken=None):
+                    radius=3200, type=None, types=[], location=None, pagetoken=None, region=None):
         """Perform a text search using the Google Places API.
 
         Only the one of the query or pagetoken kwargs are required, the rest of the 
@@ -330,12 +330,15 @@ class GooglePlaces(object):
         types    -- An optional list of types, restricting the results to
                     Places (default []). If there is only one item the request
                     will be send as type param.
+         region  -- an option region code, specified as a ccTLD (country code top-level domain)
         """
         self._request_params = {'query': query}
         if lat_lng is not None or location is not None:
             lat_lng_str = self._generate_lat_lng_string(lat_lng, location)
             self._request_params['location'] = lat_lng_str
         self._request_params['radius'] = radius
+        if region is not None:
+            self._request_params['region'] = region
         if type:
             self._request_params['type'] = type
         elif types:
